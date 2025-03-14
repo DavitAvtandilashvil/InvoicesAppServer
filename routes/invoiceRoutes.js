@@ -7,8 +7,21 @@ const authMiddleware = require("../middleware/authMiddleware");
 // routes/invoices.js
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    // Get invoices for the authenticated user
-    const invoices = await Invoice.find({ userId: req.user.id });
+    let { paymentStatus } = req.query;
+
+    // Always filter by user ID
+    let filter = { userId: req.user.id };
+
+    if (paymentStatus) {
+      // Ensure paymentStatus is always an array
+      const statusArray = Array.isArray(paymentStatus)
+        ? paymentStatus
+        : [paymentStatus];
+
+      filter.paymentStatus = { $in: statusArray }; // Use MongoDB $in
+    }
+
+    const invoices = await Invoice.find(filter);
     res.json(invoices);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
