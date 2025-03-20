@@ -81,4 +81,23 @@ router.get("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedInvoice = await Invoice.findOneAndDelete({
+      id,
+      userId: req.user.id, // Ensure the user owns the invoice
+    });
+
+    if (!deletedInvoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.json({ message: "Invoice deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 module.exports = router;
