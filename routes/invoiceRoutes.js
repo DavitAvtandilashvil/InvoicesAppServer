@@ -31,9 +31,6 @@ router.get("/", authMiddleware, async (req, res) => {
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const {
-      clientName,
-      date,
-      price,
       paymentStatus,
       billFrom,
       billTo,
@@ -45,9 +42,6 @@ router.post("/", authMiddleware, async (req, res) => {
 
     // Ensure the userId is provided
     const newInvoice = new Invoice({
-      clientName,
-      date,
-      price,
       paymentStatus,
       billFrom,
       billTo,
@@ -59,7 +53,7 @@ router.post("/", authMiddleware, async (req, res) => {
     });
 
     const savedInvoice = await newInvoice.save();
-    res.status(201).json(savedInvoice);
+    res.status(201).json({ message: "Invoice created successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

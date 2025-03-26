@@ -18,9 +18,7 @@ const invoiceSchema = new Schema(
         return `INV${Math.floor(1000 + Math.random() * 9000)}`;
       },
     },
-    clientName: { type: String, required: true },
-    date: { type: String, required: true },
-    price: { type: Number, required: true },
+
     paymentStatus: { type: String, required: true },
     billFrom: {
       streetAddress: { type: String, required: true },
