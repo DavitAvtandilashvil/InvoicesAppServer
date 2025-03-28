@@ -94,4 +94,45 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      paymentStatus,
+      billFrom,
+      billTo,
+      invoiceDate,
+      paymentTerms,
+      projectDescription,
+      items,
+    } = req.body;
+
+    // Find the invoice by ID and user ID, and update it with the new data
+    const updatedInvoice = await Invoice.findOneAndUpdate(
+      { id, userId: req.user.id }, // Find invoice by ID and user ID
+      {
+        paymentStatus,
+        billFrom,
+        billTo,
+        invoiceDate,
+        paymentTerms,
+        projectDescription,
+        items,
+      },
+      { new: true } // Return the updated invoice
+    );
+
+    if (!updatedInvoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.json({
+      message: "Invoice updated successfully",
+      invoice: updatedInvoice,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 module.exports = router;
